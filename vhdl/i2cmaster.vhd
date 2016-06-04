@@ -1,11 +1,29 @@
---###############################
---# Project Name : 
---# File         : 
---# Author       : 
---# Description  : 
---# Modification History
---#
---###############################
+----------------------------------------------------------------
+---- Project Name : i2c master
+---- File         : i2cmaster.vhd
+---- Author       : Philippe Thirion
+---- Description  : i2c master finite state machine
+---- Modification History
+---- 2016/06/04 
+----------------------------------------------------------------
+
+--	copyright Philippe Thirion
+--	github.com/tirfil
+--
+--    Copyright 2016 Philippe THIRION
+--
+--    This program is free software: you can redistribute it and/or modify
+--    it under the terms of the GNU General Public License as published by
+--    the Free Software Foundation, either version 3 of the License, or
+--    (at your option) any later version.
+
+--    This program is distributed in the hope that it will be useful,
+--    but WITHOUT ANY WARRANTY; without even the implied warranty of
+--    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--    GNU General Public License for more details.
+
+--    You should have received a copy of the GNU General Public License
+--    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library IEEE;
 use IEEE.std_logic_1164.all;
@@ -220,6 +238,7 @@ begin
 					if (RD = '1') then
 						shift <= (others=>'0');
 						counter <= "0000";
+						QUEUED <= '1';
 						state <= S_RECVBIT;
 					elsif (WE = '1') then	
 						SCL_OUT <= '0';
@@ -229,8 +248,9 @@ begin
 						end if;
 					else
 						SCL_OUT <= '0';
-						SDA_OUT <= '0';
+						-- SDA_OUT <= '0';
 						if 	(TIC = '1') then
+							SDA_OUT <= '0';
 							state <= S_PRESTOP;
 						end if;
 					end if;
@@ -271,7 +291,11 @@ begin
 			elsif (state = S_SENDACK) then
 				if 	(TIC = '1') then
 					STATUS <= "110";
-					SDA_OUT <= '0';
+					if (RD = '1') then
+						SDA_OUT <= '0';
+					else
+						SDA_OUT <= '1';  -- last read 
+					end if;
 					DOUT <= shift;
 					NACK <= '0';
 					QUEUED <= '0';
@@ -281,7 +305,7 @@ begin
 				end if;
 			elsif (state = S_SENDACKUP) then
 				if 	(TIC = '1') then
-					SDA_OUT <= '0';
+					-- SDA_OUT <= '0';
 					NACK <= '0';
 					QUEUED <= '0';
 					DATA_VALID <= '0';
@@ -290,7 +314,7 @@ begin
 				end if;
 			elsif (state = S_SENDACKDOWN) then
 				if 	(TIC = '1') then
-					SDA_OUT <= '0';
+					-- SDA_OUT <= '0';
 					NACK <= '0';
 					QUEUED <= '0';
 					DATA_VALID <= '0';

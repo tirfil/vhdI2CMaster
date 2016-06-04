@@ -128,13 +128,15 @@ begin
 		wait until QUEUED'event and QUEUED = '0';
 		WE <= '0';
 		RD <= '1';
-		wait until DATA_VALID'event and DATA_VALID = '0';
-		SDA_IN <= '1';
+		wait until QUEUED'event and QUEUED = '0';
 		WE <= '0';
 		RD <= '1';
 		wait until DATA_VALID'event and DATA_VALID = '0';
+		SDA_IN <= '1';
+		wait until QUEUED'event and QUEUED = '0';
 		WE <= '0';
-		RD <= '0';		
+		RD <= '0';	
+		wait until DATA_VALID'event and DATA_VALID = '0';	
 		wait for 100 uS;
 		RUNNING <= '0';
 		wait;
