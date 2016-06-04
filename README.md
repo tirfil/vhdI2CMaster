@@ -5,9 +5,6 @@ Notes:
 ------
 Vhdl code would be simplified.
 
-Need to solve bug:
-* Master should'nt acknowledge last byte received ( read operation ).
-
 System Interface :
 ----------------
 
