@@ -1,6 +1,13 @@
 
 # I2C Master finite state machine
 
+Notes:
+------
+Vhdl code would be simplified.
+
+Need to solve bug:
+* Master should'nt acknowledge last byte received ( read operation ).
+
 System Interface :
 ----------------
 
@@ -19,4 +26,6 @@ System Interface :
 | DATA_VALID | output | Output data is valid on bus |
 | STATUS[2:0] | output | finite state machine status ( for debug purpose ) |
 
+
+![waveform](https://github.com/tirfil/vhdI2CMaster/blob/master/image/i2cmaster.png)
 
