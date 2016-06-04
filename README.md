@@ -20,7 +20,7 @@ System Interface :
 | DIN[7:0] | input | Input data bus |
 | RD  | input | Read command operation |
 | WE  | input | Write command operation |
-| QUEUED | output | Write command is accepted, next operation ( write or read ) could be introduced | 
+| QUEUED | output | Current command is accepted, next operation ( write or read ) could be introduced | 
 | NACK | output | Remote slave interface doesn't acknowledge write operation |
 | DOUT[7:0] | output | Output data bus |
 | DATA_VALID | output | Output data is valid on bus |
