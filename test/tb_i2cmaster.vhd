@@ -4,7 +4,7 @@
 --# Author       : 
 --# Description  : 
 --# Modification History
---#
+---- 2016/06/06 Add STOP
 --###############################
 
 library IEEE;
@@ -31,6 +31,7 @@ architecture stimulus of tb_I2CMASTER is
 			QUEUED		: out	std_logic;
 			DATA_VALID		: out	std_logic;
 			STATUS		: out	std_logic_vector(2 downto 0);
+			STOP		: out   std_logic;
 			SCL_IN		: in	std_logic;
 			SCL_OUT		: out	std_logic;
 			SDA_IN		: in	std_logic;
@@ -52,6 +53,7 @@ architecture stimulus of tb_I2CMASTER is
 	signal QUEUED		: std_logic;
 	signal DATA_VALID		: std_logic;
 	signal STATUS		: std_logic_vector(2 downto 0);
+	signal STOP		: std_logic;
 	signal SCL_IN		: std_logic;
 	signal SCL_OUT		: std_logic;
 	signal SDA_IN		: std_logic;
@@ -77,6 +79,7 @@ begin
 			NACK		=> NACK,
 			QUEUED		=> QUEUED,
 			DATA_VALID		=> DATA_VALID,
+			STOP		=> STOP,
 			STATUS		=> STATUS,
 			SCL_IN		=> SCL_IN,
 			SCL_OUT		=> SCL_OUT,

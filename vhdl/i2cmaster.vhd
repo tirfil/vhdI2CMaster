@@ -5,6 +5,7 @@
 ---- Description  : i2c master finite state machine
 ---- Modification History
 ---- 2016/06/04 
+---- 2016/06/06 Add STOP
 ----------------------------------------------------------------
 
 --	copyright Philippe Thirion
@@ -54,6 +55,7 @@ entity I2CMASTER is
 		NACK		: out	std_logic;						-- nack from slave
 		QUEUED		: out	std_logic;						-- operation (write or read cycle) is queued
 		DATA_VALID		: out	std_logic;					-- new data available on DOUT
+		STOP		: out	std_logic;
 		STATUS		: out	std_logic_vector(2 downto 0);	-- state machine state
 		SCL_IN		: in	std_logic;						-- i2c signals
 		SCL_OUT		: out	std_logic;
@@ -91,6 +93,7 @@ begin
 			counter <= (others=>'0');
 			nackdet <= '0';
 			shift <= (others=>'0');
+			STOP <= '0';
 		elsif (MCLK'event and MCLK = '1') then
 			if (SRST = '1') then
 				state <= S_IDLE;
@@ -103,6 +106,7 @@ begin
 				DATA_VALID <= '0';
 				DOUT <= (others=>'1');
 				counter <= (others=>'0');
+				STOP <= '0';
 				state <= S_IDLE;
 				if (TIC = '1') then
 					if (WE = '1' or RD = '1') then
@@ -115,6 +119,7 @@ begin
 				SDA_OUT <= '0'; -- start bit
 				NACK <= '0';
 				QUEUED <= '0';
+				STOP <= '0';
 				DATA_VALID <= '0';
 				if 	(TIC = '1') then
 					SCL_OUT <= '0';
@@ -138,6 +143,7 @@ begin
 					counter <= next_counter; 
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					state <= S_WESCLUP;
 				end if;
@@ -153,6 +159,7 @@ begin
 				if 	(TIC = '1') then
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					SCL_OUT <= '0';
 					if (counter(3) = '1') then
@@ -167,6 +174,7 @@ begin
 					SDA_OUT <= '1';
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					SCL_OUT <= '0';
 					state <= S_CHECKACKUP;	
@@ -175,6 +183,7 @@ begin
 				if 	(TIC = '1') then
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					SCL_OUT <= '1';
 					if (SDA_IN = '1') then
 						nackdet <= '1';
@@ -187,6 +196,7 @@ begin
 				if 	(TIC = '1') then
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					SCL_OUT <= '0';
 					state <= next_state;	-- S_WRITE or S_READ
@@ -196,8 +206,8 @@ begin
 					NACK <= '1';
 					SCL_OUT <= '0';
 					SDA_OUT <= '0';
-					nackdet <= '0';
 					if 	(TIC = '1') then
+						nackdet <= '0';
 						state <= S_PRESTOP;
 					end if;
 				else
@@ -230,8 +240,8 @@ begin
 					NACK <= '1';
 					SCL_OUT <= '0';
 					SDA_OUT <= '0';
-					nackdet <= '0';
 					if 	(TIC = '1') then
+						nackdet <= '0';
 						state <= S_PRESTOP;
 					end if;
 				else
@@ -263,6 +273,7 @@ begin
 					counter <= next_counter; 
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					state <= S_RDSCLUP;
 				end if;
@@ -270,6 +281,7 @@ begin
 				if 	(TIC = '1') then
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					SCL_OUT <= '1';
 					shift(7 downto 1) <= shift(6 downto 0);
@@ -280,6 +292,7 @@ begin
 				if 	(TIC = '1') then
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					SCL_OUT <= '0';
 					if (counter(3) = '1') then
@@ -299,6 +312,7 @@ begin
 					DOUT <= shift;
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '1';
 					SCL_OUT <= '0';
 					state <= S_SENDACKUP;
@@ -308,6 +322,7 @@ begin
 					-- SDA_OUT <= '0';
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					SCL_OUT <= '1';
 					state <= S_SENDACKDOWN;
@@ -317,6 +332,7 @@ begin
 					-- SDA_OUT <= '0';
 					NACK <= '0';
 					QUEUED <= '0';
+					STOP <= '0';
 					DATA_VALID <= '0';
 					SCL_OUT <= '0';
 					state <= S_READ;
@@ -324,8 +340,10 @@ begin
 			elsif (state = S_PRESTOP) then
 				if 	(TIC = '1') then
 					STATUS <= "111";
+					STOP <= '1';
 					SCL_OUT <= '1';
 					SDA_OUT <= '0';
+					NACK <= '0';
 					state <= S_STOP;
 				end if;
 			elsif (state = S_STOP) then
