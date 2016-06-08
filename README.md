@@ -23,5 +23,15 @@ System Interface :
 
 Demo with MPU6050 : detect object oriention
 
-![waveform](https://github.com/tirfil/vhdI2CMaster/blob/master/image/test_mpu6050.png)
+X axis:
+
+![xaxis](https://github.com/tirfil/vhdI2CMaster/blob/master/image/xaxis.JPG)
+
+Y axis:
+
+![yaxis](https://github.com/tirfil/vhdI2CMaster/blob/master/image/yaxis.JPG)
+
+Z axis:
+
+![zaxis](https://github.com/tirfil/vhdI2CMaster/blob/master/image/zaxis.JPG)
 
