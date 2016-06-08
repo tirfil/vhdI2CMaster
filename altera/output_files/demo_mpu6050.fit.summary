@@ -1,0 +1,16 @@
+Fitter Status : Successful - Wed Jun  8 17:33:34 2016
+Quartus II 32-bit Version : 13.0.1 Build 232 06/12/2013 SP 1 SJ Web Edition
+Revision Name : demo_mpu6050
+Top-level Entity Name : DEMO_MPU6050
+Family : Cyclone IV E
+Device : EP4CE6E22C8
+Timing Models : Final
+Total logic elements : 350 / 6,272 ( 6 % )
+    Total combinational functions : 349 / 6,272 ( 6 % )
+    Dedicated logic registers : 113 / 6,272 ( 2 % )
+Total registers : 113
+Total pins : 8 / 92 ( 9 % )
+Total virtual pins : 0
+Total memory bits : 0 / 276,480 ( 0 % )
+Embedded Multiplier 9-bit elements : 0 / 30 ( 0 % )
+Total PLLs : 0 / 2 ( 0 % )

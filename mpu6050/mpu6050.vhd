@@ -56,15 +56,17 @@ begin
 			state <= S_IDLE;
 		elsif (MCLK'event and MCLK = '1') then
 			if (state = S_IDLE) then
-				SRST <='0';
-				DOUT <= (others=>'0');
-				RD <= '0';
-				WE <= '0';
-				adr_i <= (others=>'0');
-				LOAD <= '0';
-				DATA <= (others=>'1');
-				COMPLETED <= '0';
-				state <= S_PWRMGT0;
+				if (TIC = '1') then
+					SRST <='0';
+					DOUT <= (others=>'0');
+					RD <= '0';
+					WE <= '0';
+					adr_i <= (others=>'0');
+					LOAD <= '0';
+					DATA <= (others=>'1');
+					COMPLETED <= '0';
+					state <= S_PWRMGT0;
+				end if;
 			elsif (state = S_PWRMGT0) then -- init power management
 				if (TIC = '1') then
 					DOUT <= x"6B";

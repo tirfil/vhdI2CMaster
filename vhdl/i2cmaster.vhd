@@ -75,9 +75,22 @@ architecture rtl of I2CMASTER is
 	signal shift : std_logic_vector(7 downto 0);
 	signal nackdet :  std_logic;
 
+	signal sda_in_q, sda_in_qq : std_logic;
+
 begin
 
 	next_counter <= std_logic_vector(to_unsigned( to_integer(unsigned( counter )) + 1, 4) );
+
+	RESY: process(MCLK, nRST)
+	begin
+		if (nRST = '0') then
+			sda_in_q <= '1';
+			sda_in_qq <= '1';
+		elsif (MCLK'event and MCLK = '1') then
+			sda_in_q <= SDA_IN;
+			sda_in_qq <= sda_in_q;
+		end if;
+	end process RESY;
 
 	OTO: process(MCLK, nRST)
 	begin
@@ -126,10 +139,10 @@ begin
 					counter <= "0000";
 					shift(7 downto 1) <= DEVICE(6 downto 0);
 					if (WE = '1') then 
-						shift(0) <= '1';
+						shift(0) <= '0';
 						next_state <= S_WRITE;
 					else
-						shift(0) <= '0'; -- RD='1'
+						shift(0) <= '1'; -- RD='1'
 						next_state <= S_READ;
 					end if;
 					state <= S_SENDBIT;
@@ -185,7 +198,7 @@ begin
 					QUEUED <= '0';
 					STOP <= '0';
 					SCL_OUT <= '1';
-					if (SDA_IN = '1') then
+					if (sda_in_qq = '1') then
 						nackdet <= '1';
 					else
 						nackdet <= '0';
@@ -205,9 +218,9 @@ begin
 				if (nackdet = '1') then
 					NACK <= '1';
 					SCL_OUT <= '0';
-					SDA_OUT <= '0';
 					if 	(TIC = '1') then
 						nackdet <= '0';
+						SDA_OUT <= '0';
 						state <= S_PRESTOP;
 					end if;
 				else
@@ -239,9 +252,9 @@ begin
 				if (nackdet = '1') then
 					NACK <= '1';
 					SCL_OUT <= '0';
-					SDA_OUT <= '0';
 					if 	(TIC = '1') then
 						nackdet <= '0';
+						SDA_OUT <= '0';
 						state <= S_PRESTOP;
 					end if;
 				else
@@ -285,7 +298,7 @@ begin
 					DATA_VALID <= '0';
 					SCL_OUT <= '1';
 					shift(7 downto 1) <= shift(6 downto 0);
-					shift(0) <= SDA_IN;
+					shift(0) <= sda_in_qq;
 					state <= S_RDSCLDOWN;
 				end if;
 			elsif (state = S_RDSCLDOWN) then
