@@ -1,9 +1,6 @@
 
 # I2C Master finite state machine
 
-Notes:
-------
-Vhdl code would be simplified.
 
 System Interface :
 ----------------
@@ -21,8 +18,10 @@ System Interface :
 | NACK | output | Remote slave interface doesn't acknowledge write operation |
 | DOUT[7:0] | output | Output data bus |
 | DATA_VALID | output | Output data is valid on bus |
+| STOP | output | Detect stop condition |
 | STATUS[2:0] | output | finite state machine status ( for debug purpose ) |
 
+Demo with MPU6050 : detect object oriention
 
-![waveform](https://github.com/tirfil/vhdI2CMaster/blob/master/image/i2cmaster.png)
+![waveform](https://github.com/tirfil/vhdI2CMaster/blob/master/image/test_mpu6050.png)
 
